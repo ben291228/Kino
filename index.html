@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Jugadas Súper Kino TV</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .jugada { margin: 5px; padding: 10px; border: 1px solid #ccc; display: inline-block; }
+        button { padding: 10px; background: #28a745; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Generador de Jugadas Súper Kino TV</h1>
+    <button onclick="generarJugadas()">Generar 400 Jugadas</button>
+    <div id="resultado"></div>
+
+    <script>
+        const numerosFrecuentes = [21, 24, 35, 76, 74, 19, 61, 60, 4, 63];
+        
+        function generarJugadas() {
+            let jugadas = [];
+            let resultadoDiv = document.getElementById("resultado");
+            resultadoDiv.innerHTML = "";
+            
+            while (jugadas.length < 400) {
+                let jugada = generarJugada();
+                jugadas.push(jugada);
+                resultadoDiv.innerHTML += `<div class='jugada'>${jugada.join(', ')}</div>`;
+            }
+        }
+        
+        function generarJugada() {
+            let numerosDisponibles = Array.from({length: 80}, (_, i) => i + 1);
+            let seleccionados = [];
+            
+            // Agregar algunos números calientes primero
+            while (seleccionados.length < 5) {
+                let num = numerosFrecuentes[Math.floor(Math.random() * numerosFrecuentes.length)];
+                if (!seleccionados.includes(num)) {
+                    seleccionados.push(num);
+                }
+            }
+            
+            // Completar con números aleatorios únicos
+            while (seleccionados.length < 10) {
+                let indice = Math.floor(Math.random() * numerosDisponibles.length);
+                let num = numerosDisponibles.splice(indice, 1)[0];
+                if (!seleccionados.includes(num)) {
+                    seleccionados.push(num);
+                }
+            }
+            
+            return seleccionados.sort((a, b) => a - b);
+        }
+    </script>
+</body>
+</html>
