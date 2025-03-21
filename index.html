@@ -7,19 +7,26 @@
     <style>
         body { font-family: Arial, sans-serif; text-align: center; }
         .jugada { margin: 5px; padding: 10px; border: 1px solid #ccc; display: inline-block; }
-        button { padding: 10px; background: #28a745; color: white; border: none; cursor: pointer; }
+        button { padding: 10px; background: #28a745; color: white; border: none; cursor: pointer; margin: 5px; }
+        input { padding: 5px; margin: 5px; }
     </style>
 </head>
 <body>
     <h1>Generador de Jugadas Súper Kino TV</h1>
     <button onclick="generarJugadas()">Generar 400 Jugadas</button>
+    <button onclick="guardarJugadas()">Guardar Jugadas</button>
+    <br>
+    <input type="text" id="numerosVerificar" placeholder="Números separados por coma">
+    <button onclick="verificarJugadas()">Verificar</button>
     <div id="resultado"></div>
+    <div id="verificacion"></div>
 
     <script>
         const numerosFrecuentes = [21, 24, 35, 76, 74, 19, 61, 60, 4, 63];
-        
+        let jugadas = [];
+
         function generarJugadas() {
-            let jugadas = [];
+            jugadas = [];
             let resultadoDiv = document.getElementById("resultado");
             resultadoDiv.innerHTML = "";
             
@@ -34,7 +41,6 @@
             let numerosDisponibles = Array.from({length: 80}, (_, i) => i + 1);
             let seleccionados = [];
             
-            // Agregar algunos números calientes primero
             while (seleccionados.length < 5) {
                 let num = numerosFrecuentes[Math.floor(Math.random() * numerosFrecuentes.length)];
                 if (!seleccionados.includes(num)) {
@@ -42,7 +48,6 @@
                 }
             }
             
-            // Completar con números aleatorios únicos
             while (seleccionados.length < 10) {
                 let indice = Math.floor(Math.random() * numerosDisponibles.length);
                 let num = numerosDisponibles.splice(indice, 1)[0];
@@ -53,6 +58,40 @@
             
             return seleccionados.sort((a, b) => a - b);
         }
+
+        function guardarJugadas() {
+            localStorage.setItem("jugadasGuardadas", JSON.stringify(jugadas));
+            alert("Jugadas guardadas correctamente.");
+        }
+
+        function verificarJugadas() {
+            let numerosInput = document.getElementById("numerosVerificar").value;
+            let numerosVerificar = numerosInput.split(",").map(num => parseInt(num.trim())).filter(num => !isNaN(num));
+            let resultadoVerificacion = document.getElementById("verificacion");
+            resultadoVerificacion.innerHTML = "";
+            
+            let coincidencias = jugadas.filter(jugada => 
+                numerosVerificar.every(num => jugada.includes(num))
+            );
+            
+            if (coincidencias.length > 0) {
+                resultadoVerificacion.innerHTML = `<p>Se encontraron ${coincidencias.length} jugadas que contienen los números: ${numerosVerificar.join(", ")}</p>`;
+            } else {
+                resultadoVerificacion.innerHTML = `<p>No se encontraron jugadas con esos números.</p>`;
+            }
+        }
+
+        window.onload = function() {
+            let jugadasGuardadas = localStorage.getItem("jugadasGuardadas");
+            if (jugadasGuardadas) {
+                jugadas = JSON.parse(jugadasGuardadas);
+                let resultadoDiv = document.getElementById("resultado");
+                resultadoDiv.innerHTML = "";
+                jugadas.forEach(jugada => {
+                    resultadoDiv.innerHTML += `<div class='jugada'>${jugada.join(', ')}</div>`;
+                });
+            }
+        };
     </script>
 </body>
 </html>
