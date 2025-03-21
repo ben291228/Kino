@@ -11,7 +11,7 @@
         .amarillo { background-color: #fff3cd; }
         .rojo { background-color: #f8d7da; }
         button { padding: 10px; background: #28a745; color: white; border: none; cursor: pointer; margin: 5px; }
-        input { padding: 5px; margin: 5px; }
+        input { padding: 5px; margin: 5px; width: 80%; }
     </style>
 </head>
 <body>
@@ -20,14 +20,26 @@
     <button onclick="guardarJugadas()">Guardar Jugadas</button>
     <button onclick="mostrarJugadasGuardadas()">Ver Jugadas Guardadas</button>
     <br>
-    <input type="text" id="numerosVerificar" placeholder="Números separados por coma">
+    <input type="text" id="numerosVerificar" placeholder="Ingrese 20 números separados por coma">
     <button onclick="verificarJugadas()">Verificar</button>
     <div id="resultado"></div>
     <div id="verificacion"></div>
+    <div id="ganancias"></div>
 
     <script>
-        const numerosFrecuentes = [55, 12, 34, 23, 45, 67, 78, 89, 90, 21, 22, 33, 44, 56, 66, 77, 88, 99, 11, 13];
+        const numerosFrecuentes = [6, 7, 19, 21, 26, 27, 31, 33, 34, 37, 49, 51, 58, 60, 61, 62, 65, 69, 72, 79];
         let jugadas = [];
+        
+        const premios = {
+            10: 25000000,
+            9: 1000000,
+            8: 50000,
+            7: 1000,
+            6: 100,
+            5: 20,
+            4: 10,
+            3: 5
+        };
 
         function generarJugadas() {
             jugadas = [];
@@ -87,20 +99,30 @@
             let numerosInput = document.getElementById("numerosVerificar").value;
             let numerosVerificar = numerosInput.split(",").map(num => parseInt(num.trim())).filter(num => !isNaN(num));
             let resultadoVerificacion = document.getElementById("verificacion");
+            let resultadoGanancias = document.getElementById("ganancias");
             resultadoVerificacion.innerHTML = "";
+            resultadoGanancias.innerHTML = "";
+            let totalGanado = 0;
             
-            jugadas.forEach(jugada => {
+            if (numerosVerificar.length !== 20) {
+                alert("Por favor, ingrese exactamente 20 números.");
+                return;
+            }
+            
+            let jugadasVerificadas = jugadas.map(jugada => {
                 let coincidencias = jugada.filter(num => numerosVerificar.includes(num)).length;
-                let clase = '';
-                if (coincidencias >= 6) {
-                    clase = 'verde';
-                } else if (coincidencias > 0) {
-                    clase = 'amarillo';
-                } else {
-                    clase = 'rojo';
-                }
+                return { jugada, coincidencias };
+            });
+            
+            jugadasVerificadas.sort((a, b) => b.coincidencias - a.coincidencias);
+            
+            jugadasVerificadas.forEach(({ jugada, coincidencias }) => {
+                let clase = coincidencias >= 6 ? 'verde' : coincidencias > 0 ? 'amarillo' : 'rojo';
+                totalGanado += premios[coincidencias] || 0;
                 resultadoVerificacion.innerHTML += `<div class='jugada ${clase}'>${jugada.join(', ')} - Coincidencias: ${coincidencias}</div>`;
             });
+            
+            resultadoGanancias.innerHTML = `<h2>Total ganado: RD$${totalGanado.toLocaleString()}</h2>`;
         }
 
         window.onload = function() {
