@@ -15,6 +15,7 @@
     <h1>Generador de Jugadas Súper Kino TV</h1>
     <button onclick="generarJugadas()">Generar 400 Jugadas</button>
     <button onclick="guardarJugadas()">Guardar Jugadas</button>
+    <button onclick="mostrarJugadasGuardadas()">Ver Jugadas Guardadas</button>
     <br>
     <input type="text" id="numerosVerificar" placeholder="Números separados por coma">
     <button onclick="verificarJugadas()">Verificar</button>
@@ -62,6 +63,21 @@
         function guardarJugadas() {
             localStorage.setItem("jugadasGuardadas", JSON.stringify(jugadas));
             alert("Jugadas guardadas correctamente.");
+        }
+
+        function mostrarJugadasGuardadas() {
+            let jugadasGuardadas = localStorage.getItem("jugadasGuardadas");
+            let resultadoDiv = document.getElementById("resultado");
+            resultadoDiv.innerHTML = "";
+            
+            if (jugadasGuardadas) {
+                jugadas = JSON.parse(jugadasGuardadas);
+                jugadas.forEach(jugada => {
+                    resultadoDiv.innerHTML += `<div class='jugada'>${jugada.join(', ')}</div>`;
+                });
+            } else {
+                resultadoDiv.innerHTML = "<p>No hay jugadas guardadas.</p>";
+            }
         }
 
         function verificarJugadas() {
