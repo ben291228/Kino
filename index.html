@@ -7,6 +7,9 @@
     <style>
         body { font-family: Arial, sans-serif; text-align: center; }
         .jugada { margin: 5px; padding: 10px; border: 1px solid #ccc; display: inline-block; }
+        .verde { background-color: #d4edda; }
+        .amarillo { background-color: #fff3cd; }
+        .rojo { background-color: #f8d7da; }
         button { padding: 10px; background: #28a745; color: white; border: none; cursor: pointer; margin: 5px; }
         input { padding: 5px; margin: 5px; }
     </style>
@@ -23,7 +26,7 @@
     <div id="verificacion"></div>
 
     <script>
-        const numerosFrecuentes = [21, 24, 35, 76, 74, 19, 61, 60, 4, 63];
+        const numerosFrecuentes = [55, 12, 34, 23, 45, 67, 78, 89, 90, 21, 22, 33, 44, 56, 66, 77, 88, 99, 11, 13];
         let jugadas = [];
 
         function generarJugadas() {
@@ -86,15 +89,18 @@
             let resultadoVerificacion = document.getElementById("verificacion");
             resultadoVerificacion.innerHTML = "";
             
-            let coincidencias = jugadas.filter(jugada => 
-                numerosVerificar.every(num => jugada.includes(num))
-            );
-            
-            if (coincidencias.length > 0) {
-                resultadoVerificacion.innerHTML = `<p>Se encontraron ${coincidencias.length} jugadas que contienen los números: ${numerosVerificar.join(", ")}</p>`;
-            } else {
-                resultadoVerificacion.innerHTML = `<p>No se encontraron jugadas con esos números.</p>`;
-            }
+            jugadas.forEach(jugada => {
+                let coincidencias = jugada.filter(num => numerosVerificar.includes(num)).length;
+                let clase = '';
+                if (coincidencias >= 6) {
+                    clase = 'verde';
+                } else if (coincidencias > 0) {
+                    clase = 'amarillo';
+                } else {
+                    clase = 'rojo';
+                }
+                resultadoVerificacion.innerHTML += `<div class='jugada ${clase}'>${jugada.join(', ')} - Coincidencias: ${coincidencias}</div>`;
+            });
         }
 
         window.onload = function() {
