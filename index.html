@@ -27,18 +27,17 @@
     <div id="ganancias"></div>
 
     <script>
-        const numerosFrecuentes = [6, 7, 19, 21, 26, 27, 31, 33, 34, 37, 49, 51, 58, 60, 61, 62, 65, 69, 72, 79];
+        const numerosFrecuentes = [6, 7, 19, 21, 26, 27, 31, 33, 34, 37, 49, 51, 58, 60, 61, 62, 65, 69, 72, 79, 44, 27, 21, 71, 18, 45, 74, 67, 66, 63, 55, 12, 23, 34, 45, 56, 78, 89, 90,3 ,6 ,14 ,28 ,29 ,31 ,32 ,33 ,36 ,43 ,46 ,54 ,57 ,62 ,64 ,67 ,73 ,76 ,79 ,80,3 ,4 ,7 ,15 ,21 ,22 ,24 ,26 ,27 ,29 ,31 ,33 ,40 ,44 ,49 ,51 ,61 ,75 ,76 ,80];
         let jugadas = [];
         
         const premios = {
-            10: 25000000,
-            9: 1000000,
-            8: 50000,
+            10: 2500000,
+            9: 150000,
+            8: 10000,
             7: 1000,
-            6: 100,
-            5: 20,
-            4: 10,
-            3: 5
+            6: 300,
+            5: 60,
+            0: 80
         };
 
         function generarJugadas() {
@@ -54,22 +53,21 @@
         }
         
         function generarJugada() {
-            let numerosDisponibles = Array.from({length: 80}, (_, i) => i + 1);
             let seleccionados = [];
             
-            while (seleccionados.length < 5) {
+            while (seleccionados.length < 6) {
                 let num = numerosFrecuentes[Math.floor(Math.random() * numerosFrecuentes.length)];
                 if (!seleccionados.includes(num)) {
                     seleccionados.push(num);
                 }
             }
             
+            let numerosDisponibles = Array.from({length: 80}, (_, i) => i + 1).filter(num => !seleccionados.includes(num));
+            
             while (seleccionados.length < 10) {
                 let indice = Math.floor(Math.random() * numerosDisponibles.length);
                 let num = numerosDisponibles.splice(indice, 1)[0];
-                if (!seleccionados.includes(num)) {
-                    seleccionados.push(num);
-                }
+                seleccionados.push(num);
             }
             
             return seleccionados.sort((a, b) => a - b);
@@ -117,7 +115,7 @@
             jugadasVerificadas.sort((a, b) => b.coincidencias - a.coincidencias);
             
             jugadasVerificadas.forEach(({ jugada, coincidencias }) => {
-                let clase = coincidencias >= 6 ? 'verde' : coincidencias > 0 ? 'amarillo' : 'rojo';
+                let clase = coincidencias >= 5 ? 'verde' : coincidencias < 1 ? 'amarillo' : 'rojo';
                 totalGanado += premios[coincidencias] || 0;
                 resultadoVerificacion.innerHTML += `<div class='jugada ${clase}'>${jugada.join(', ')} - Coincidencias: ${coincidencias}</div>`;
             });
